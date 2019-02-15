@@ -1,1 +1,1 @@
-import pg70_server
+from predefined_object_gripping import GrippingNamedObjects

@@ -1,0 +1,9 @@
+#!/usr/bin/env python
+
+from pg_action_servers import GrippingNamedObjects
+
+if __name__== '__main__':
+    try:
+        GrippingNamedObjects()
+    except:
+        pass

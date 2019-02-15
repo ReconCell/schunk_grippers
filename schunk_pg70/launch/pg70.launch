@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<launch>
+
+<!-- Parameter setting is temporary here, remove later -->
+<param name="hopu/smart_spot" value="15" type="double" />
+<param name="hopu/gas_exp" value="25" type="double" />
+<param name="hopu/battery_exp" value="35" type="double" />
+
+<group ns="schunk_pg70">
+    <include file="$(find schunk_pg70)/launch/pg70_rs232_control.launch" />
+
+    <node name="grip_named_object_action_server" pkg="schunk_pg70" type="grip_named_object_action" output="screen" />
+</group>
+</launch>

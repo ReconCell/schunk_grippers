@@ -1,6 +1,5 @@
 <?xml version="1.0" ?>
 <launch>
-<group ns="schunk_pg70">
   <node name="schunk_pg70" pkg="schunk_pg70" type="schunk_pg70" output="screen" >
     <rosparam>
       gripper_id: 12
@@ -8,5 +7,4 @@
       baudrate: 9600
     </rosparam>
   </node>
-</group>
 </launch>
