@@ -5,15 +5,19 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   serial
   message_generation
+  genmsg
+  actionlib_msgs
   tf
   )
 
+catkin_python_setup()
+
 include_directories(${catkin_INCLUDE_DIRS}
                     ${PROJECT_SOURCE_DIR}/include/)
-                   
+
 SET(SOURCES ${PROJECT_SOURCE_DIR}/src/pg70_rs232_control.cpp
             ${PROJECT_SOURCE_DIR}/src/pg70_rs232_control_lib.cpp)
-   
+
 SET(HEADERS ${PROJECT_SOURCE_DIR}/include/pg70_rs232_control.h)
 
 add_service_files(FILES reference.srv
@@ -23,7 +27,12 @@ add_service_files(FILES reference.srv
                         acknowledge_error.srv
                         stop.srv)
 
-generate_messages(DEPENDENCIES)
+add_action_files(
+  DIRECTORY action
+  FILES GripNamedObject.action
+  )
+
+generate_messages(DEPENDENCIES actionlib_msgs)
 
 catkin_package(
   INCLUDE_DIRS include
