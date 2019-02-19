@@ -14,14 +14,19 @@ from schunk_pg70.msg import GripNamedObjectAction, GripNamedObjectFeedback, Grip
 from schunk_pg70.srv import set_position
 
 
-DEFAULT_SPEED = 10
-DEFAULT_ACCEL = 10
+MAX_SPEED = 82
+MAX_ACCEL = 300
+DEFAULT_SPEED = MAX_SPEED*0.2
+DEFAULT_ACCEL = MAX_ACCEL*0.1
 
 GRIPPER_OPEN = 65
 
 POS_TOLERANCE = 0.2
 
 M_TO_MM = 1000
+
+SERVICE_TIMEOUT = 3
+
 
 class GrippingNamedObjects(object):
     def __init__(self):
@@ -43,7 +48,7 @@ class GrippingNamedObjects(object):
             self._as = actionlib.SimpleActionServer('grip_named_object', GripNamedObjectAction, self.execute_cb)
             rospy.loginfo("Started 'grip_named_object_action_server'")
 
-            self._rate = 20
+            self._rate = rospy.Rate(20)
 
             rospy.spin()
         except Exception as e:
@@ -54,7 +59,14 @@ class GrippingNamedObjects(object):
         self.gripper_gap = (self.gripper_joints[0] + self.gripper_joints[1])*M_TO_MM
 
     def open_gripper_cb(self, req):
-        self.set_grip_pos(GRIPPER_OPEN, DEFAULT_SPEED, DEFAULT_ACCEL)
+        self.set_grip_pos(GRIPPER_OPEN, MAX_SPEED, MAX_ACCEL)
+
+        time_start = rospy.get_time()
+        while (abs(GRIPPER_OPEN - self.gripper_gap) > POS_TOLERANCE and
+                (rospy.get_time() - time_start) < SERVICE_TIMEOUT):
+            self._rate.sleep()
+
+        return []
 
     def execute_cb(self, goal):
         object_name = goal.object_name
