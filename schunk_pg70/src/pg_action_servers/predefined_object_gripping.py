@@ -26,6 +26,7 @@ POS_TOLERANCE = 0.2
 M_TO_MM = 1000
 
 SERVICE_TIMEOUT = 3
+SERVER_TIMEOUT = 10
 
 
 class GrippingNamedObjects(object):
@@ -86,9 +87,10 @@ class GrippingNamedObjects(object):
         self.set_grip_pos(grasping_gap, DEFAULT_SPEED, DEFAULT_ACCEL)
 
         # Wait for the position to be reached
-        feedback = GripNamedObjectFeedback
-        while abs(grasping_gap - self.gripper_gap) > POS_TOLERANCE:
-            # feedback.gripper_position = self.gripper_gap
+        time_start = rospy.get_time()
+        while (abs(grasping_gap - self.gripper_gap) > POS_TOLERANCE and
+                (rospy.get_time() - time_start) < SERVICE_TIMEOUT):
+
             self._as.publish_feedback(GripNamedObjectFeedback(
                 abs(grasping_gap - self.gripper_gap)))
 
